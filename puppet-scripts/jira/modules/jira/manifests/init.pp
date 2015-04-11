@@ -1,41 +1,41 @@
-class jira ( $jira_base_dir, $version, $user, $group ){
+class jira ( $jira_base_dir, $version){
 
 $jira_home="$jira_base_dir/jira-home"
 $jira_install_dir="$jira_base_dir/atlassian-jira-$version-standalone"
- 
-  group { "$group" :
-    ensure => present,
-    gid => 501,
-  }
+$tarball=atlassian-jira-$version.tar.gz
 
-  user {
-    "$user":
-     uid => '3000',
-     groups => "$group",
-     home => "/home/$user",
-     ensure => present,
-     managehome => true,
-	 require => Group["$group"],
+   file { $bamboo_base_dir :
+      ensure => directory,
+	  owner => "ec2-user",
+	  group => "ec2-user",
   }
 
   exec {
     "create_jira_home":
     command => "sudo mkdir -p $jira_home",
     creates => "$jira_home",
-	require => User["$user"],
   }
 
   exec {
     "download_jira":
-	command => "curl -L https://www.atlassian.com/software/jira/downloads/binary/atlassian-jira-$version.tar.gz | sudo tar zx",
+	command => "curl -O https://downloads.atlassian.com/software/jira/downloads/$tarball",
     cwd => "$jira_base_dir",
     require => Exec["create_jira_home"],
     creates => "$jira_install_dir",
   }
   
+  exec {
+    'extract_jira:
+	 cwd => $jira_base_dir,
+     command => "tar xf $tarball",
+	 user => "ec2-user",
+	 creates => $jira_install_dir,
+	 require => Exec['download_jira'],
+  }
+  
    exec { 
     "change_owners":
-    command => "sudo chown $user:$group -R $jira_base_dir",
+    command => "sudo chown ec2-user:ec2-user -R $jira_base_dir",
 	cwd => "$jira_base_dir",
     require => Exec["download_jira"],
 	notify => Service["jira"]
@@ -45,6 +45,7 @@ $jira_install_dir="$jira_base_dir/atlassian-jira-$version-standalone"
     content => inline_template("export JIRA_HOME=$jira_home"),
   }
   
+  ## TODO fix this
   service { 'jira':
     ensure     => running,
     hasstatus  => true,

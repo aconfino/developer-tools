@@ -1,28 +1,12 @@
-class stash ( $stash_base_dir, $version, $user, $group ){
+class stash ( $stash_base_dir, $version){
 
 $stash_home="$stash_base_dir/stash-home"
 $stash_install_dir="$stash_base_dir/atlassian-stash-$version"
-
-  group { "$group" :
-    ensure => present,
-    gid => 501,
-  }
-
-  user {
-    "$user":
-     uid => '3000',
-     groups => "$group",
-     home => "/home/$user",
-     ensure => present,
-     managehome => true,
-	 require => Group["$group"],
-  }
 
   exec {
     "create_stash_home":
     command => "sudo mkdir -p $stash_home",
     creates => "$stash_home",
-	require => User["$user"],
   }
 
   exec {
@@ -33,9 +17,9 @@ $stash_install_dir="$stash_base_dir/atlassian-stash-$version"
     creates => "$stash_install_dir",
   }
   
-   exec { 
+  exec { 
     "change_owners":
-    command => "sudo chown $user:$group -R $stash_base_dir",
+    command => "sudo chown $ec2-user:$ec2-user -R $stash_base_dir",
 	cwd => "$stash_base_dir",
     require => Exec["download_stash"],
 	notify => Service["stash"]
@@ -45,6 +29,7 @@ $stash_install_dir="$stash_base_dir/atlassian-stash-$version"
     content => inline_template("export STASH_HOME=$stash_home"),
   }
  
+  ## TODO need to be updated
   service { 'stash':
     ensure     => running,
     hasstatus  => true,
