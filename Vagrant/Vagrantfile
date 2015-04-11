@@ -1,0 +1,53 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+
+  config.vm.box = "puppetlabs/centos-7.0-64-puppet"
+  config.vm.box_url = "https://atlas.hashicorp.com/puppetlabs/boxes/centos-7.0-64-puppet"
+  
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "2048"
+  end
+	
+  config.vm.define "stash" do |stash_config|
+	stash_config.vm.network "private_network", ip: "192.168.1.10"
+    stash_config.vm.hostname = "stash-demo"
+    stash_config.vm.network :forwarded_port, host: 7000, guest: 7990
+    stash_config.vm.provision "puppet" do |puppet|
+      puppet.manifests_path = "puppet-scripts/stash/manifests"
+      puppet.module_path = "puppet-scripts/stash/modules"
+      puppet.manifest_file = "site.pp"
+      puppet.options = "--verbose --debug"
+    end
+  end
+
+  config.vm.define "jira" do |jira_config|
+	jira_config.vm.network "private_network", ip: "192.168.1.11"
+    jira_config.vm.hostname = "jira-demo"
+    jira_config.vm.network :forwarded_port, host: 8000, guest: 8080
+    jira_config.vm.provision "puppet" do |puppet|
+      puppet.manifests_path = "puppet-scripts/jira/manifests"
+      puppet.module_path = "puppet-scripts/jira/modules"
+      puppet.manifest_file = "site.pp"
+      puppet.options = "--verbose --debug"
+    end
+  end
+  
+  config.vm.define "bamboo" do |bamboo_config|
+	bamboo_config.vm.network "private_network", ip: "192.168.1.12"
+    bamboo_config.vm.hostname = "bamboo-demo"
+    bamboo_config.vm.network :forwarded_port, host: 9000, guest: 8085
+    bamboo_config.vm.provision "puppet" do |puppet|
+      puppet.manifests_path = "puppet-scripts/bamboo/manifests"
+      puppet.module_path = "puppet-scripts/bamboo/modules"
+      puppet.manifest_file = "site.pp"
+      puppet.options = "--verbose --debug"
+    end
+  end
+
+end
+
+
+
+
