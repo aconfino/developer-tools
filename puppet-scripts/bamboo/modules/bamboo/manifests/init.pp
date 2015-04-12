@@ -43,9 +43,9 @@ $tarball="atlassian-bamboo-$version.tar.gz"
   }
  
   file { "/etc/environment":
-    content => inline_template("export BAMBOO_HOME=$bamboo_home"),
+    content => inline_template("BAMBOO_HOME=$bamboo_home"),
   }
-  
+
   service { 'bamboo':
     ensure     => running,
     hasstatus  => false,
