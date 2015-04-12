@@ -4,7 +4,7 @@ class bamboo ($bamboo_base_dir, $version){
 $bamboo_home="$bamboo_base_dir/bamboo-home"
 $bamboo_install_dir="$bamboo_base_dir/atlassian-bamboo-$version"
 $tarball="atlassian-bamboo-$version.tar.gz"
-$setenv="$bamboo_install_dir/bin/setenv.sh"
+$bamboo_config="$bamboo_install_dir/atlassian-bamboo/WEB-INF/classes/bamboo-init.properties"
 
    file { $bamboo_base_dir :
       ensure => directory,
@@ -45,9 +45,9 @@ $setenv="$bamboo_install_dir/bin/setenv.sh"
   }
 
   file_line { 'modify BAMBOO_HOME variable':
-    path => $setenv,  
-    line => "BAMBOO_HOME=$bamboo_home",
-    match   => "#BAMBOO_HOME=\"\"",
+    path => $bamboo_config,  
+    line => "bamboo.home=$bamboo_home",
+    match   => "#bamboo.home=C:/bamboo/bamboo-home",
     require => Exec[ "change_owners" ]
   }
 
