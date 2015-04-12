@@ -51,15 +51,15 @@ $setenv="$bamboo_install_dir/bin/setenv.sh"
     match   => "#BAMBOO_HOME=\"\"",
   }
 
-
-
   service { 'bamboo':
     ensure     => running,
     hasstatus  => false,
     start      => "su ec2-user -c $bamboo_install_dir/bin/start-bamboo.sh",
     stop       => "su ec2-user -c $bamboo_install_dir/bin/stop-bamboo.sh",
 	status     => "puppet:///modules/bamboo/bamboo-status.sh",
-    require    => Exec[ "change_owners" ]
+    require    => [ Exec[ "change_owners" ],
+                    File_line [ 'modify BAMBOO_HOME variable']
+                  ]
   }
  
 }
