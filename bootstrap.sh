@@ -25,20 +25,6 @@ function install_puppet {
 
 }
 
-function install_git {
-
-  GIT__INSTALLED=$(rpm -qa | grep git)
-
-  if [ ! GIT_INSTALLED ]; then
-     echo "Installing git"
-     sudo yum -y install git
-  else
-     echo "Git is already installed"
-  fi
-
-}
-
-
 function git_clone {
   cd $BASE_DIR
   rm -rf $TOOLS_DIR
@@ -53,7 +39,6 @@ function papply {
 }
 
 install_puppet
-install_git
 git_clone
 papply
 
