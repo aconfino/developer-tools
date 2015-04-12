@@ -47,8 +47,7 @@ function git_clone {
 }
 
 function papply {
-  cd $TOOLS_DIR
-  echo "PRETENDING to papply something"
+  sudo $TOOLS_DIR/papply.sh bamboo 
 }
 
 install_puppet
