@@ -7,7 +7,6 @@
 # The git repo contains puppet scripts to setup multiple servers
 # Call the appropriate papply-foo.sh at the end to install the specific  server
 
-
 BASE_DIR=/home/ec2-user
 TOOLS_DIR=$BASE_DIR/developer-tools
 
@@ -15,11 +14,12 @@ function install_puppet {
   
   PUPPET_INSTALLED=$(rpm -qa | grep puppet)
   
-  if [ ! PUPPET_INSTALLED ]; then
+  if [ -z $PUPPET_INSTALLED ]; then
      echo "Installing Puppet"
      sudo rpm -ivh http://yum.puppetlabs.com/puppetlabs-release-el-7.noarch.rpm
      sudo yum -y install puppet
   else
+     echo $PUPPET_INSTALLED
      echo "Puppet is already installed"
   fi
 
@@ -29,7 +29,7 @@ function install_git {
 
   GIT__INSTALLED=$(rpm -qa | grep git)
 
-  if [ ! GIT_INSTALLED ]; then
+  if [ -z $GIT_INSTALLED ]; then
      echo "Installing git"
      sudo yum -y install git
   else
@@ -48,7 +48,7 @@ function git_clone {
 
 function papply {
   cd $TOOLS_DIR
-  echo "pretending to papply something"
+  echo "PRETENDING to papply something"
 }
 
 install_puppet
@@ -57,6 +57,6 @@ git_clone
 papply
 
 
-# Call the appropriate puppet script in papply
+# Call the papply.sh script
 
 
