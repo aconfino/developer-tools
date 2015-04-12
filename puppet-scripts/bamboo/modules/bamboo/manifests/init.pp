@@ -44,11 +44,11 @@ $setenv="$bamboo_install_dir/bin/setenv.sh"
 	notify => Service["bamboo"]
   }
 
-
   file_line { 'modify BAMBOO_HOME variable':
     path => $setenv,  
     line => "BAMBOO_HOME=$bamboo_home",
     match   => "#BAMBOO_HOME=\"\"",
+    require => Exec[ "change_owners" ]
   }
 
   service { 'bamboo':
@@ -57,9 +57,7 @@ $setenv="$bamboo_install_dir/bin/setenv.sh"
     start      => "su ec2-user -c $bamboo_install_dir/bin/start-bamboo.sh",
     stop       => "su ec2-user -c $bamboo_install_dir/bin/stop-bamboo.sh",
 	status     => "puppet:///modules/bamboo/bamboo-status.sh",
-    require    => [ Exec[ "change_owners" ],
-                    File_line [ 'modify BAMBOO_HOME variable']
-                  ]
+    require => File_line [ 'modify BAMBOO_HOME variable' ]
   }
  
 }
