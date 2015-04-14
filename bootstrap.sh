@@ -9,6 +9,7 @@
 
 BASE_DIR=/home/ec2-user
 TOOLS_DIR=$BASE_DIR/developer-tools
+TOOL=$1
 
 function install_puppet {
   
@@ -47,15 +48,16 @@ function git_clone {
 }
 
 function papply {
-  sudo $TOOLS_DIR/papply.sh bamboo 
+  sudo $TOOLS_DIR/papply.sh $TOOL 
 }
+
+if [ -z "$1" ]
+  then
+    echo "Please specify a tool.  Example: bootstrap.sh bamboo"
+	exit 1;
+fi
 
 install_puppet
 install_git
 git_clone
 papply
-
-
-# Call the papply.sh script
-
-

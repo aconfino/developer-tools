@@ -1,7 +1,15 @@
 #!/bin/bash
 
+IMAGE_ID=ami-99bef1a9
+INSTANCE_TYPE=t2.medium
+SUBNET=subnet-92ce78e5
+KEY_NAME=development
+SECURITY_GROUP=sg-d76362b2
+PEM_FILE=c:\projects\aws-work\development.pem
+TOOL=$1
+
 function createInstance(){
-  instance_id=$(aws ec2 run-instances --image-id ami-99bef1a9 --instance-type t2.micro --subnet-id subnet-92ce78e5 --key-name development --associate-public-ip-address --security-group-ids sg-d76362b2 --output text --query Instances[*].InstanceId)
+  instance_id=$(aws ec2 run-instances --image-id $IMAGE_ID --instance-type $INSTANCE_TYPE --subnet-id $SUBNET --key-name $KEY_NAME --associate-public-ip-address --security-group-ids $SECURITY_GROUP --block-device-mappings "[{\"DeviceName\": \"/dev/sdh\",\"Ebs\":{\"VolumeSize\":30}}]" --output text --query Instances[*].InstanceId)
   echo "Created $instance_id"
 }
 
@@ -53,24 +61,29 @@ function waitForStatusChecks(){
   echo "Status is $status"
 }
 
-function performInitialSCP(){
-  scp -r -i development.pem -o stricthostkeychecking=no output.json ec2-user@$public_ip:~
+function installGit(){
+  ssh -t -i $PEM_FILE -o stricthostkeychecking=no ec2-user@$public_ip 'sudo yum -y install git'
 }
+
+function cloneRepo(){
+  ssh -t -i $PEM_FILE -o stricthostkeychecking=no ec2-user@$public_ip 'git clone http://github.com/aconfino/developer-tools/'
+}
+
+function bootstrap(){
+  ssh -t -i $PEM_FILE -o stricthostkeychecking=no ec2-user@$public_ip 'cp /developer-tools/boostrap.sh ~/boostrap.sh'
+  ssh -t -i $PEM_FILE -o stricthostkeychecking=no ec2-user@$public_ip 'boostrap.sh $TOOL'
+}
+
+if [ -z "$1" ]
+  then
+    echo "Please specify a tool you wish to provision.  Example: create-instance.sh bamboo"
+	exit 1;
+fi
 
 createInstance
 waitForRunningState
 waitForIpAssignment
 waitForStatusChecks
-performInitialSCP
-
-
-
-
-
-
-
-
-
-
-
-
+installGit
+cloneRepo
+bootstrap
