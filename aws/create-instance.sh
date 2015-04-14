@@ -96,5 +96,3 @@ waitForStatusChecks
 installGit
 cloneRepo
 bootstrap
-
- 
