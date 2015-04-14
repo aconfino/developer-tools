@@ -15,7 +15,7 @@ function waitForRunningState(){
   while [ $instance_state != "running" ]
     do
       sleep 5
-	  checkState
+      checkState
       echo "State is $instance_state"
   done
   echo "State is $instance_state"
@@ -31,7 +31,7 @@ function waitForIpAssignment(){
   while [ $public_ip == "None" ]
     do
       sleep 5
-	  checkPublicIp
+      checkPublicIp
       echo "Public ip is $public_ip"
   done
   echo "Public ip is $public_ip"
@@ -47,7 +47,7 @@ function waitForStatusChecks(){
   while [ $status != "ok" ]
     do
       sleep 5
-	  checkStatus
+      checkStatus
       echo "Status is $status"	  
   done
   echo "Status is $status"
