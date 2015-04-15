@@ -4,7 +4,7 @@ $jira_home="$jira_base_dir/jira-home"
 $jira_install_dir="$jira_base_dir/atlassian-jira-$version-standalone"
 $tarball=atlassian-jira-$version.tar.gz
 
-   file { $bamboo_base_dir :
+  file { $bamboo_base_dir :
       ensure => directory,
 	  owner => "ec2-user",
 	  group => "ec2-user",
@@ -25,7 +25,7 @@ $tarball=atlassian-jira-$version.tar.gz
   }
   
   exec {
-    'extract_jira:
+    'extract_jira':
 	 cwd => $jira_base_dir,
      command => "tar xf $tarball",
 	 user => "ec2-user",
