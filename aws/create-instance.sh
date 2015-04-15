@@ -6,7 +6,7 @@ SECURITY_GROUP=sg-9dc580f9
 KEY_NAME=dev-poc-east
 
 INSTANCE_TYPE=t2.medium
-PEM_FILE=dev-poc-east.pem
+PEM_FILE=$KEY_NAME.pem
 TOOL=$1
 
 function checkState(){
