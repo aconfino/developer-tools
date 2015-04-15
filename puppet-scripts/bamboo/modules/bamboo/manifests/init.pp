@@ -36,7 +36,7 @@ $bamboo_config="$bamboo_install_dir/atlassian-bamboo/WEB-INF/classes/bamboo-init
 	 require => Exec['download_bamboo'],
   }
   
-   exec { 
+  exec { 
     "change_owners":
     command => "chown ec2-user:ec2-user -R $bamboo_base_dir",
 	cwd => "$bamboo_base_dir",

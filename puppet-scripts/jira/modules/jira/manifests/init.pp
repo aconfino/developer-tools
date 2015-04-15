@@ -3,6 +3,8 @@ class jira ( $jira_base_dir, $version){
 $jira_home="$jira_base_dir/jira-home"
 $jira_install_dir="$jira_base_dir/atlassian-jira-$version-standalone"
 $tarball="atlassian-jira-$version.tar.gz"
+$jira_properties="$jira_install_dir/atlassian-jira/WEB-INF/classes/jira-application.properties"
+$environment_properties="$jira_install_dir/bin/setenv.sh"
 
   file { $jira_base_dir :
       ensure => directory,
@@ -34,7 +36,7 @@ $tarball="atlassian-jira-$version.tar.gz"
 	 require => Exec['download_jira'],
   }
   
-   exec { 
+  exec { 
     "change_owners":
     command => "chown ec2-user:ec2-user -R $jira_base_dir",
 	cwd => "$jira_base_dir",
@@ -42,8 +44,22 @@ $tarball="atlassian-jira-$version.tar.gz"
 	notify => Service["jira"]
   }
   
-  file { "/etc/profile.d/jira-setup.sh":
-    content => inline_template("export JIRA_HOME=$jira_home"),
+  file_line { 'modify JIRA_HOME variable':
+    path => $jira_properties,  
+    line => "jira.home=$jira_home",
+    match   => "jira.home =",
+  }
+  
+  file_line { 'modify JVM_MINIMUM_MEMORY':
+    path => $environment_properties,  
+    line => "JVM_MINIMUM_MEMORY=\"768m\"",
+    match   => "JVM_MINIMUM_MEMORY=\"384m\"",
+  }
+  
+  file_line { 'modify JVM_MAXIMUM_MEMORY':
+    path => $environment_properties,  
+    line => "JVM_MAXIMUM_MEMORY=\"768m\"",
+    match   => "JVM_MAXIMUM_MEMORY=\"1536m\"",
   }
   
   service { 'jira':
@@ -52,7 +68,10 @@ $tarball="atlassian-jira-$version.tar.gz"
     start      => "su ec2-user -c $jira_install_dir/bin/start-jira.sh",
     stop       => "su ec2-user -c $jira_install_dir/bin/stop-jira.sh",
 	status     => "puppet:///modules/jira/jira-status.sh",
-    require     => File["/etc/profile.d/jira-setup.sh"],
+    require     => [ File_line [ 'modify JIRA_HOME variable' ],
+					 File_line [ 'modify JVM_MINIMUM_MEMORY' ],
+					 File_line [ 'modify JVM_MAXIMUM_MEMORY' ]
+					]
   }
  
 }
