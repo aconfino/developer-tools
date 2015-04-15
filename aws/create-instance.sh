@@ -6,7 +6,7 @@ SECURITY_GROUP=sg-9dc580f9
 KEY_NAME=dev-poc-east
 
 INSTANCE_TYPE=t2.medium
-PEM_FILE=$KEY_NAME.pem
+PEM_FILE=dev-poc-east.pem
 TOOL=$1
 
 function checkState(){
@@ -37,6 +37,7 @@ function createInstance(){
   echo "Instance $instance_id is running."
   checkState getInstanceStatus "ok" "$instance_id waiting for initialization"
   echo "Instance $instance_id has been initialized."  
+  public_ip=$(aws ec2 describe-instances --instance-ids $instance_id --output text --query Reservations[0].Instances[0].PublicIpAddress) 
 }
 
 function installGit(){
@@ -56,7 +57,7 @@ function bootstrap(){
 }
 
 function verify(){
-    if [ -z "$1" ]
+    if [[ $1 ]]
       then
         echo "Please specify a tool you wish to provision.  Example: create-instance.sh bamboo"
 	    exit 1;
