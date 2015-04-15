@@ -2,7 +2,7 @@ class jira ( $jira_base_dir, $version){
 
 $jira_home="$jira_base_dir/jira-home"
 $jira_install_dir="$jira_base_dir/atlassian-jira-$version-standalone"
-$tarball="atlassian-jira-$version.tar.gz""
+$tarball="atlassian-jira-$version.tar.gz"
 
   file { $jira_base_dir :
       ensure => directory,
