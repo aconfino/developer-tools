@@ -70,10 +70,6 @@ function modifyRouteTable(){
 }
 
 function createKeyPair(){
-    #cleanup
-    if [ -f $key_pair.pem ]; then
-       rm -rf $key_pair.pem
-    fi
     echo "Creating key pair"
 	aws ec2 create-key-pair --key-name $key_pair --output text --query KeyMaterial > $key_pair.pem
 	chmod 400 $key_pair.pem
@@ -98,28 +94,18 @@ echo "==============================================="
 echo "                                               "
 }
 
-vpc_id=vpc-6f26030a
-internet_gateway_id=igw-b88a11dd
-subnet_id=subnet-43a58179
-security_group_id=sg-7db1f419
-key_pair=dev-poc-east
-
 #createVpc
 #enableDnsHostname
 #createInternetGateway
 #createSecurityGroup
 #createDefaultSubnet
-modifyRouteTable
+#modifyRouteTable
 #createKeyPair
 #haveANiceDay
 
+IMAGE_ID=ami-60a1e808
+INSTANCE_TYPE=t2.micro
+SUBNET=subnet-19a28623
+security_group_id=sg-9dc580f9
 
-#IMAGE_ID=ami-60a1e808
-#INSTANCE_TYPE=t2.micro
-#SUBNET=subnet-43a58179
-#security_group_id=sg-7db1f419
-
-#aws ec2 run-instances --image-id $IMAGE_ID --instance-type $INSTANCE_TYPE --subnet-id $SUBNET --key-name $key_pair --associate-public-ip-address --security-group-ids $security_group_id --block-device-mappings "[{\"DeviceName\": \"/dev/sdh\",\"Ebs\":{\"VolumeSize\":30}}]" --output text --query Instances[*].InstanceId
-
-
-aws ec2 describe-route-tables --filter Name=vpc-id,Values=vpc-6f26030a --output text --query RouteTables[0].RouteTableId
+aws ec2 run-instances --image-id $IMAGE_ID --instance-type $INSTANCE_TYPE --subnet-id $SUBNET --key-name $key_pair --associate-public-ip-address --security-group-ids $security_group_id --block-device-mappings "[{\"DeviceName\": \"/dev/sdh\",\"Ebs\":{\"VolumeSize\":30}}]" --output text --query Instances[*].InstanceId
