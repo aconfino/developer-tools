@@ -1,9 +1,7 @@
 #!/bin/bash
 
 home_cidr=98.115.186.136/32
-
-vpc_id=vpc-23426746
-security_group_id=sg-35692c51
+key_pair=dev-poc-east
 
 function checkState(){
   current_state=$($1)
@@ -34,6 +32,13 @@ function enableDnsHostname(){
 	echo "enabled dns hostnames for $vpc_id"
 }
 
+function createInternetGateway(){
+    echo "Creating internet gateway"
+    internet_gateway_id=$(aws ec2 create-internet-gateway --output text --query InternetGateway.InternetGatewayId)
+	echo "Attaching VPC $vpc_id to internet gateway $internet_gateway_id"
+    aws ec2 attach-internet-gateway --vpc-id $vpc_id --internet-gateway-id $internet_gateway_id
+}
+
 function createSecurityGroup(){
     security_group_id=$(aws ec2 create-security-group --group-name dev-poc --description "dev-poc only allows access from my IP address and machines in my subnet" --vpc-id $vpc_id --output text --query GroupId)
 	echo "Created security group $security_group_id"
@@ -53,11 +58,32 @@ function createDefaultSubnet(){
 	subnet_id=$(aws ec2 create-subnet --vpc-id $vpc_id --cidr-block 10.0.1.0/24 --output text --query Subnet.SubnetId)
 	echo "Created default subnet $subnet_id"
 	checkState getSubnetState "available"
+	echo "Modifying subnet to map public ips when launching instances"
+	aws ec2 modify-subnet-attribute --subnet-id $subnet_id --map-public-ip-on-launch
 	echo "Subnet is available"
 }
 
+function createKeyPair(){
+    #cleanup
+    if [ -f $key_pair.pem ]; then
+       rm -rf $key_pair.pem
+    fi
+    echo "Creating key pair"
+	aws ec2 create-key-pair --key-name $key_pair --output text --query KeyMaterial > $key_pair.pem
+	chmod 400 $key_pair.pem
+	echo "Generated $key_pair.pem"
+}
 
-#createVpc
-#enableDnsHostname
-#createSecurityGroup
-#createDefaultSubnet
+createVpc
+enableDnsHostname
+createInternetGateway
+createSecurityGroup
+createDefaultSubnet
+createKeyPair
+
+#IMAGE_ID=ami-60a1e808
+#INSTANCE_TYPE=t2.micro
+#SUBNET=subnet-2385107a
+#security_group_id=sg-c189cca5
+
+#aws ec2 run-instances --image-id $IMAGE_ID --instance-type $INSTANCE_TYPE --subnet-id $SUBNET --key-name $key_pair --associate-public-ip-address --security-group-ids $security_group_id --block-device-mappings "[{\"DeviceName\": \"/dev/sdh\",\"Ebs\":{\"VolumeSize\":30}}]" --output text --query Instances[*].InstanceId
