@@ -9,11 +9,12 @@ $tarball="atlassian-jira-$version.tar.gz"
 	  owner => "ec2-user",
 	  group => "ec2-user",
   }
-
-  exec {
-    "create_jira_home":
-    command => "sudo mkdir -p $jira_home",
-    creates => "$jira_home",
+  
+  file { $jira_home :
+      ensure => directory,
+	  owner => "ec2-user",
+	  group => "ec2-user",
+	  require => File[$jira_base_dir],
   }
 
   exec {
