@@ -36,7 +36,7 @@ $tarball="atlassian-jira-$version.tar.gz"
   
    exec { 
     "change_owners":
-    command => "sudo chown ec2-user:ec2-user -R $jira_base_dir",
+    command => "chown ec2-user:ec2-user -R $jira_base_dir",
 	cwd => "$jira_base_dir",
     require => Exec["download_jira"],
 	notify => Service["jira"]
