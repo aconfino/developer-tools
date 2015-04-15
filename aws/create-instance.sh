@@ -57,7 +57,7 @@ function bootstrap(){
 }
 
 function verify(){
-    if [[ $1 ]]
+    if [[ -z $1 ]]
       then
         echo "Please specify a tool you wish to provision.  Example: create-instance.sh bamboo"
 	    exit 1;
