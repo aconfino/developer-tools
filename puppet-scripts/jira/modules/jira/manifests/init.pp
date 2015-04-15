@@ -41,25 +41,27 @@ $environment_properties="$jira_install_dir/bin/setenv.sh"
     command => "chown ec2-user:ec2-user -R $jira_base_dir",
 	cwd => "$jira_base_dir",
     require => Exec["download_jira"],
-	notify => Service["jira"]
   }
   
   file_line { 'modify JIRA_HOME variable':
     path => $jira_properties,  
     line => "jira.home=$jira_home",
     match   => "jira.home =",
+	require => Exec["change_owners"],
   }
   
   file_line { 'modify JVM_MINIMUM_MEMORY':
     path => $environment_properties,  
     line => "JVM_MINIMUM_MEMORY=\"768m\"",
     match   => "JVM_MINIMUM_MEMORY=\"384m\"",
+	require => Exec["change_owners"],
   }
   
   file_line { 'modify JVM_MAXIMUM_MEMORY':
     path => $environment_properties,  
     line => "JVM_MAXIMUM_MEMORY=\"1536m\"",
     match   => "JVM_MAXIMUM_MEMORY=\"768m\"",
+	require => Exec["change_owners"],
   }
   
   service { 'jira':
