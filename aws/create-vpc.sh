@@ -77,11 +77,8 @@ function createKeyPair(){
 }
 
 function haveANiceDay(){
-echo "                                               "
 echo "==============================================="
-echo "                                               "
 echo "          VPC successfully created!            "
-echo "                                               "
 echo "VPC = $vpc_id"
 echo "Internet Gateway = $internet_gateway_id"
 echo "Subnet = $subnet_id"
@@ -89,23 +86,14 @@ echo "Security Group = $security_group_id"
 echo "Key pair = $key_pair"
 echo "                                               "
 echo "             Have a nice day!                  "
-echo "                                               "
 echo "==============================================="
-echo "                                               "
 }
 
-#createVpc
-#enableDnsHostname
-#createInternetGateway
-#createSecurityGroup
-#createDefaultSubnet
-#modifyRouteTable
-#createKeyPair
-#haveANiceDay
-
-IMAGE_ID=ami-60a1e808
-INSTANCE_TYPE=t2.micro
-SUBNET=subnet-19a28623
-security_group_id=sg-9dc580f9
-
-aws ec2 run-instances --image-id $IMAGE_ID --instance-type $INSTANCE_TYPE --subnet-id $SUBNET --key-name $key_pair --associate-public-ip-address --security-group-ids $security_group_id --block-device-mappings "[{\"DeviceName\": \"/dev/sdh\",\"Ebs\":{\"VolumeSize\":30}}]" --output text --query Instances[*].InstanceId
+createVpc
+enableDnsHostname
+createInternetGateway
+createSecurityGroup
+createDefaultSubnet
+modifyRouteTable
+createKeyPair
+haveANiceDay
