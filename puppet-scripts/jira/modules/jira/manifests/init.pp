@@ -40,7 +40,7 @@ $environment_properties="$jira_install_dir/bin/setenv.sh"
     "change_owners":
     command => "chown ec2-user:ec2-user -R $jira_base_dir",
 	cwd => "$jira_base_dir",
-    require => Exec["download_jira"],
+    require => Exec["extract_jira"],
   }
   
   file_line { 'modify JIRA_HOME variable':
