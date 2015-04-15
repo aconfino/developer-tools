@@ -58,8 +58,8 @@ $environment_properties="$jira_install_dir/bin/setenv.sh"
   
   file_line { 'modify JVM_MAXIMUM_MEMORY':
     path => $environment_properties,  
-    line => "JVM_MAXIMUM_MEMORY=\"768m\"",
-    match   => "JVM_MAXIMUM_MEMORY=\"1536m\"",
+    line => "JVM_MAXIMUM_MEMORY=\"1536m\"",
+    match   => "JVM_MAXIMUM_MEMORY=\"768m\"",
   }
   
   service { 'jira':
