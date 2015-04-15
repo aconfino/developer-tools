@@ -4,7 +4,7 @@ $jira_home="$jira_base_dir/jira-home"
 $jira_install_dir="$jira_base_dir/atlassian-jira-$version-standalone"
 $tarball="atlassian-jira-$version.tar.gz""
 
-  file { $bamboo_base_dir :
+  file { $jira_base_dir :
       ensure => directory,
 	  owner => "ec2-user",
 	  group => "ec2-user",
