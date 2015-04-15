@@ -63,6 +63,12 @@ function createDefaultSubnet(){
 	echo "Subnet is available"
 }
 
+function modifyRouteTable(){
+     route_table_id=$(aws ec2 describe-route-tables --filter Name=vpc-id,Values=$vpc_id --output text --query RouteTables[0].RouteTableId)
+	 route_id=$(aws ec2 create-route --route-table-id $route_table_id --gateway-id $internet_gateway_id --destination-cidr-block 0.0.0.0/0)
+	 echo "Added internet gateway $internet_gateway_id to the main route table $route_table_id"
+}
+
 function createKeyPair(){
     #cleanup
     if [ -f $key_pair.pem ]; then
@@ -74,16 +80,46 @@ function createKeyPair(){
 	echo "Generated $key_pair.pem"
 }
 
-createVpc
-enableDnsHostname
-createInternetGateway
-createSecurityGroup
-createDefaultSubnet
-createKeyPair
+function haveANiceDay(){
+echo "                                               "
+echo "==============================================="
+echo "                                               "
+echo "          VPC successfully created!            "
+echo "                                               "
+echo "VPC = $vpc_id"
+echo "Internet Gateway = $internet_gateway_id"
+echo "Subnet = $subnet_id"
+echo "Security Group = $security_group_id"
+echo "Key pair = $key_pair"
+echo "                                               "
+echo "             Have a nice day!                  "
+echo "                                               "
+echo "==============================================="
+echo "                                               "
+}
+
+vpc_id=vpc-6f26030a
+internet_gateway_id=igw-b88a11dd
+subnet_id=subnet-43a58179
+security_group_id=sg-7db1f419
+key_pair=dev-poc-east
+
+#createVpc
+#enableDnsHostname
+#createInternetGateway
+#createSecurityGroup
+#createDefaultSubnet
+modifyRouteTable
+#createKeyPair
+#haveANiceDay
+
 
 #IMAGE_ID=ami-60a1e808
 #INSTANCE_TYPE=t2.micro
-#SUBNET=subnet-2385107a
-#security_group_id=sg-c189cca5
+#SUBNET=subnet-43a58179
+#security_group_id=sg-7db1f419
 
 #aws ec2 run-instances --image-id $IMAGE_ID --instance-type $INSTANCE_TYPE --subnet-id $SUBNET --key-name $key_pair --associate-public-ip-address --security-group-ids $security_group_id --block-device-mappings "[{\"DeviceName\": \"/dev/sdh\",\"Ebs\":{\"VolumeSize\":30}}]" --output text --query Instances[*].InstanceId
+
+
+aws ec2 describe-route-tables --filter Name=vpc-id,Values=vpc-6f26030a --output text --query RouteTables[0].RouteTableId
