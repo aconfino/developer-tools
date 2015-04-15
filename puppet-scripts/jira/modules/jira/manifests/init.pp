@@ -21,7 +21,7 @@ $tarball="atlassian-jira-$version.tar.gz"
     "download_jira":
 	command => "curl -O https://downloads.atlassian.com/software/jira/downloads/$tarball",
     cwd => "$jira_base_dir",
-    require => Exec["create_jira_home"],
+    require => File[$jira_home],
     creates => "$jira_install_dir",
   }
   
