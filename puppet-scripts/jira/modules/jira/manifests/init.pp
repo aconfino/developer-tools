@@ -46,12 +46,12 @@ $tarball="atlassian-jira-$version.tar.gz"
     content => inline_template("export JIRA_HOME=$jira_home"),
   }
   
-  ## TODO fix this
   service { 'jira':
     ensure     => running,
     hasstatus  => true,
-    start      => "/vagrant/puppet-scripts/safe-start.sh $jira_home $user $jira_install_dir/bin/start-jira.sh",
-    stop       => "sudo su - $user -c $jira_install_dir/bin/stop-jira.sh",
+    start      => "su ec2-user -c $jira_install_dir/bin/start-jira.sh",
+    stop       => "su ec2-user -c $jira_install_dir/bin/stop-jira.sh",
+	status     => "puppet:///modules/jira/jira-status.sh",
     require     => File["/etc/profile.d/jira-setup.sh"],
   }
  
