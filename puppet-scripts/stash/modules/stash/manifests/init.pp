@@ -19,7 +19,7 @@ $tarball="atlassian-stash-$version.tar.gz"
 
   exec {
     "download_stash":
-	command => "curl -O https://downloads.atlassian.com/software/jira/downloads/$tarball",
+	command => "curl -O https://downloads.atlassian.com/software/stash/downloads/$tarball",
     cwd => "$stash_base_dir",
     require => File[$stash_home],
     creates => "$stash_base_dir/$atlassian-stash-$version.tar.gz",
