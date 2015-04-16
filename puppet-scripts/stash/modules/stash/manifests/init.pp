@@ -41,13 +41,5 @@ $tarball="atlassian-stash-$version.tar.gz"
     require => Exec['extract_stash'],
   }
  
-  ## TODO need to be updated
-  service { 'stash':
-    ensure     => running,
-    hasstatus  => true,
-    start      => "/vagrant/puppet-scripts/safe-start.sh $stash_home $user $stash_install_dir/bin/start-stash.sh",
-    stop       => "sudo su - $user -c $stash_install_dir/bin/stop-stash.sh",
-    require     => File["/etc/profile.d/stash-setup.sh"],
-  }
  
 }
