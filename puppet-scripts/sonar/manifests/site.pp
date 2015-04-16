@@ -2,7 +2,7 @@ include java
 include unzip
 
 class { 'sonar' :
-  stash_base_dir => '/opt/sonar,
+  stash_base_dir => '/opt/sonar',
   version => '5.1',
 }
 
