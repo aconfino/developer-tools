@@ -14,4 +14,4 @@ package { "firewalld":
 Exec { path => [ "/bin/", "/sbin/" , "/usr/bin/", "/usr/sbin/" ], logoutput => true, user => "ec2-user" }
 Package { allow_virtual => false }
 
-Class ['java'] -> Class ['git'] -> Class ['stash']
+Class ['java'] -> Class ['unzip'] -> Class ['stash']
