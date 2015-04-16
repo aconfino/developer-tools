@@ -2,31 +2,43 @@ class stash ( $stash_base_dir, $version){
 
 $stash_home="$stash_base_dir/stash-home"
 $stash_install_dir="$stash_base_dir/atlassian-stash-$version"
+$tarball="atlassian-stash-$version.tar.gz"
 
-  exec {
-    "create_stash_home":
-    command => "sudo mkdir -p $stash_home",
-    creates => "$stash_home",
+  file { $stash_base_dir :
+      ensure => directory,
+	  owner => "ec2-user",
+	  group => "ec2-user",
+  }
+  
+  file { $stash_home :
+      ensure => directory,
+	  owner => "ec2-user",
+	  group => "ec2-user",
+	  require => File[$stash_base_dir],
   }
 
   exec {
     "download_stash":
-	command => "curl -L http://www.atlassian.com/software/stash/downloads/binary/atlassian-stash-$version.tar.gz | sudo tar zx",
+	command => "curl -O https://downloads.atlassian.com/software/jira/downloads/$tarball",
     cwd => "$stash_base_dir",
-    require => Exec["create_stash_home"],
-    creates => "$stash_install_dir",
+    require => File[$stash_home],
+    creates => "$stash_base_dir/$atlassian-stash-$version.tar.gz",
   }
   
+  exec {
+    'extract_stash':
+	 cwd => $stash_base_dir,
+     command => "tar xf $tarball",
+	 user => "ec2-user",
+	 creates => $stash_install_dir,
+	 require => Exec['download_stash'],
+  }
+
   exec { 
     "change_owners":
     command => "sudo chown $ec2-user:$ec2-user -R $stash_base_dir",
 	cwd => "$stash_base_dir",
-    require => Exec["download_stash"],
-	notify => Service["stash"]
-  }
-  
-  file { "/etc/profile.d/stash-setup.sh":
-    content => inline_template("export STASH_HOME=$stash_home"),
+    require => Exec['extract_stash'],
   }
  
   ## TODO need to be updated
