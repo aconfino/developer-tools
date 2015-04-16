@@ -18,13 +18,20 @@ $zip="sonarqube-$version.zip"
   }
   
   exec {
-    "extract_sonar":
+    'extract_sonar':
 	command => "unzip $zip",
     cwd => "$sonar_base_dir",
     require => Exec['download_sonar'],
     creates => "$sonar_install_dir",
   }
   
-  
+  service { 'sonar':
+    ensure     => running,
+    hasstatus  => true,
+    start      => "su ec2-user -c $sonar_install_dir/bin/linux-x86-64/sonar.sh start",
+    stop       => "su ec2-user -c $sonar_install_dir/bin/linux-x86-64/sonar.sh stop",
+	status     => "su ec2-user -c $sonar_install_dir/bin/linux-x86-64/sonar.sh status",
+    require     => Exec [ 'extract_sonar' ]
+  }
   
 }
