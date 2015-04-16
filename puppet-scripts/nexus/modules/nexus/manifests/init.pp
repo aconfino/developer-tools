@@ -1,7 +1,7 @@
 class nexus ( $nexus_base_dir, $version) {
 
 $tarball="nexus-$version-bundle.tar.gz"
-$nexus_install_dir="$nexus_base_dir/nexus-$version-bundle"
+$nexus_install_dir="$nexus_base_dir/nexus-$version"
 
   file { $nexus_base_dir :
       ensure => directory,
@@ -28,9 +28,9 @@ $nexus_install_dir="$nexus_base_dir/nexus-$version-bundle"
   service { 'nexus':
     ensure     => running,
     hasstatus  => true,
-    start      => "su ec2-user -c \"$nexus_install_dir/bin/linux-x86-64/nexus.sh start\"",
-    stop       => "su ec2-user -c \"$nexus_install_dir/bin/linux-x86-64/nexus.sh stop\"",
-	status     => "$nexus_install_dir/bin/linux-x86-64/nexus.sh status",
+    start      => "su ec2-user -c \"$nexus_install_dir/bin/nexus.sh start\"",
+    stop       => "su ec2-user -c \"$nexus_install_dir/bin/nexus.sh stop\"",
+	status     => "$nexus_install_dir/bin/nexus.sh status",
     require     => Exec [ 'extract_nexus' ]
   }
   
