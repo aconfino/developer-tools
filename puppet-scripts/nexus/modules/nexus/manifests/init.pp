@@ -2,7 +2,7 @@ class nexus ( $nexus_base_dir, $version) {
 
 $nexus_install_dir="$nexus_base_dir/nexusqube-$version"
 $tarball="nexus-$version-bundle.tar.gz"
-$nexus_install_dir=$nexus_base_dir/nexus-$version-bundle
+$nexus_install_dir="$nexus_base_dir/nexus-$version-bundle"
 
   file { $nexus_base_dir :
       ensure => directory,
