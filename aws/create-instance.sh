@@ -5,7 +5,7 @@ SUBNET=subnet-323da86b
 SECURITY_GROUP=sg-64387f00
 KEY_NAME=dev-poc-east
 
-INSTANCE_TYPE=t2.micro
+INSTANCE_TYPE=t2.medium
 TOOL=$1
 
 function checkState(){

@@ -74,10 +74,10 @@ function removeOldKeyPair(){
        echo "Deleting old pem $key_pair.pem"
 	   rm -f $key_pair.pem
     fi
-    key_pair=$(aws ec2 describe-key-pairs --output text --query KeyPairs[0].KeyName)
-	if [ $key_pair == "$key_pair"]; then
-	   echo "Delete key paif $key_pair from AWS"
-	   aws ec2 delete-key-pair --key-name
+    existing_key_pair=$(aws ec2 describe-key-pairs --output text --query KeyPairs[0].KeyName)
+	if [[ $existing_key_pair == $key_pair ]]; then
+	   echo "Deleting key pair $key_pair from AWS"
+	   aws ec2 delete-key-pair --key-name $key_pair
 	fi
 }
 
