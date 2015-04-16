@@ -1,7 +1,7 @@
 include java
 
 class { 'nexus' :
-  sonar_base_dir => '/opt/nexus',
+  nexus_base_dir => '/opt/nexus',
   version => '2.11.2-06',
 }
 
