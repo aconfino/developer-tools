@@ -1,7 +1,7 @@
 class sonar ( $sonar_base_dir, $version) {
 
-sonar_install_dir=$sonar_base_dir/sonarqube-$version
-zip=sonarqube-$version.zip
+$sonar_install_dir=$sonar_base_dir/sonarqube-$version
+$zip=sonarqube-$version.zip
 
   file { $sonar_base_dir :
       ensure => directory,
