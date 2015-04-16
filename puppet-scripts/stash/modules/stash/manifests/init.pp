@@ -52,7 +52,7 @@ $environment_properties="$stash_install_dir/bin/setenv.sh"
   file_line { 'modify JVM_MINIMUM_MEMORY':
     path => $environment_properties,  
     line => "JVM_MINIMUM_MEMORY=\"768m\"",
-    match   => "JVM_MINIMUM_MEMORY=\"384m\"",
+    match   => "JVM_MINIMUM_MEMORY=\"512m\"",
 	require => Exec["change_owners"],
   }
   
