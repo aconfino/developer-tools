@@ -5,7 +5,7 @@ SUBNET=subnet-19a28623
 SECURITY_GROUP=sg-9dc580f9
 KEY_NAME=dev-poc-east
 
-INSTANCE_TYPE=t2.medium
+INSTANCE_TYPE=t2.micro
 PEM_FILE=$KEY_NAME.pem
 TOOL=$1
 
@@ -30,6 +30,15 @@ function getInstanceStatus(){
   aws ec2 describe-instance-status --instance-ids $instance_id --output text --query InstanceStatuses[0].InstanceStatus.Status
 }
 
+function getPublicIp(){
+  public_ip=$(aws ec2 describe-instances --instance-ids $instance_id --output text --query Reservations[0].Instances[0].PublicIpAddress) 
+  echo "Public ip is $public_ip"
+}
+
+function tagInstance(){
+   aws ec2 create-tags --resource $instance_id --tags Key=Name,Value=$TOOL Key=tool,Value=CD Key=stack,Value=DEV
+}
+
 function createInstance(){
   instance_id=$(aws ec2 run-instances --image-id $IMAGE_ID --instance-type $INSTANCE_TYPE --subnet-id $SUBNET --key-name $KEY_NAME --associate-public-ip-address --security-group-ids $SECURITY_GROUP --block-device-mappings "[{\"DeviceName\": \"/dev/sdh\",\"Ebs\":{\"VolumeSize\":30}}]" --output text --query Instances[*].InstanceId)
   echo "Created $instance_id"
@@ -37,7 +46,6 @@ function createInstance(){
   echo "Instance $instance_id is running."
   checkState getInstanceStatus "ok" "$instance_id waiting for initialization"
   echo "Instance $instance_id has been initialized."  
-  public_ip=$(aws ec2 describe-instances --instance-ids $instance_id --output text --query Reservations[0].Instances[0].PublicIpAddress) 
 }
 
 function installGit(){
@@ -57,7 +65,7 @@ function bootstrap(){
 }
 
 function verify(){
-    if [[ -z $1 ]]
+    if [[ -z "$TOOL" ]]
       then
         echo "Please specify a tool you wish to provision.  Example: create-instance.sh bamboo"
 	    exit 1;
@@ -66,6 +74,8 @@ function verify(){
 
 verify
 createInstance
+getPublicIp
+tagInstance
 installGit
 cloneRepo
 bootstrap
