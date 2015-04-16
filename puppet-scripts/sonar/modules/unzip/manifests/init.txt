@@ -1,0 +1,6 @@
+class unzip {
+  package { 'unzip.x86_64' :
+    ensure => installed,
+    provider => yum,
+  }
+}
