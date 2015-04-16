@@ -1,6 +1,0 @@
-class unzip {
-  package { 'unzip-6.0-15.el7.x86_64' :
-    ensure => installed,
-    provider => yum,
-  }
-}

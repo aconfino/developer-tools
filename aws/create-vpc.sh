@@ -42,11 +42,11 @@ function createInternetGateway(){
 function createSecurityGroup(){
     security_group_id=$(aws ec2 create-security-group --group-name dev-poc --description "dev-poc only allows access from my IP address and machines in my subnet" --vpc-id $vpc_id --output text --query GroupId)
 	echo "Created security group $security_group_id"
-	aws ec2 authorize-security-group-ingress --group-id $security_group_id --protocol tcp --port 8000-9000 --source-group $security_group_id
+	aws ec2 authorize-security-group-ingress --group-id $security_group_id --protocol tcp --port 7000-9000 --source-group $security_group_id
 	echo "Allowed instances within the same security group to communicate over ports 8000-9000"
 	aws ec2 authorize-security-group-ingress --group-id $security_group_id --protocol tcp --port 22 --cidr $home_cidr
 	echo "Allowed my ip to communicate over ssh to any instance in the group"
-	aws ec2 authorize-security-group-ingress --group-id $security_group_id --protocol tcp --port 8000-9000 --cidr $home_cidr
+	aws ec2 authorize-security-group-ingress --group-id $security_group_id --protocol tcp --port 7000-9000 --cidr $home_cidr
 	echo "Allowed my ip to communicate over ports 8000-9000 to any instance in the group"
 }
 
