@@ -1,12 +1,12 @@
 #!/bin/bash
 
 IMAGE_ID=ami-60a1e808
-SUBNET=subnet-19a28623
-SECURITY_GROUP=sg-9dc580f9
+SUBNET=subnet-323da86b
+SECURITY_GROUP=sg-64387f00
 KEY_NAME=dev-poc-east
 
-INSTANCE_TYPE=t2.micro
-PEM_FILE=$KEY_NAME.pem
+INSTANCE_TYPE=t2.medium
+PEM_FILE=C:/projects/developer-tools/aws/$KEY_NAME.pem
 TOOL=$1
 
 function checkState(){
@@ -50,18 +50,18 @@ function createInstance(){
 
 function installGit(){
   echo "Installing git..."
-  ssh -t -i $PEM_FILE -o stricthostkeychecking=no ec2-user@$public_ip 'sudo yum -y install git'
+  ssh -tt -i $PEM_FILE -o stricthostkeychecking=no ec2-user@$public_ip 'sudo yum -y install git'
 }
 
 function cloneRepo(){
   echo "Cloning repo,.."
-  ssh -t -i $PEM_FILE -o stricthostkeychecking=no ec2-user@$public_ip 'git clone http://github.com/aconfino/developer-tools/'
+  ssh -tt -i $PEM_FILE -o stricthostkeychecking=no ec2-user@$public_ip 'git clone http://github.com/aconfino/developer-tools/'
 }
 
 function bootstrap(){
   echo "Executing bootstrap...HERE WERE GO!!"
-  ssh -t -i $PEM_FILE -o stricthostkeychecking=no ec2-user@$public_ip "cp ~/developer-tools/bootstrap.sh ~/bootstrap.sh"
-  ssh -t -i $PEM_FILE -o stricthostkeychecking=no ec2-user@$public_ip "~/bootstrap.sh $TOOL"
+  ssh -tt -i $PEM_FILE -o stricthostkeychecking=no ec2-user@$public_ip "cp ~/developer-tools/bootstrap.sh ~/bootstrap.sh"
+  ssh -tt -i $PEM_FILE -o stricthostkeychecking=no ec2-user@$public_ip "~/bootstrap.sh $TOOL"
 }
 
 function verify(){
