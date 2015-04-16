@@ -28,9 +28,9 @@ $nexus_install_dir="$nexus_base_dir/nexus-$version"
   service { 'nexus':
     ensure     => running,
     hasstatus  => true,
-    start      => "su ec2-user -c \"$nexus_install_dir/bin/nexus.sh start\"",
-    stop       => "su ec2-user -c \"$nexus_install_dir/bin/nexus.sh stop\"",
-	status     => "$nexus_install_dir/bin/nexus.sh status",
+    start      => "su ec2-user -c \"$nexus_install_dir/bin/nexus start\"",
+    stop       => "su ec2-user -c \"$nexus_install_dir/bin/nexus stop\"",
+	status     => "$nexus_install_dir/bin/nexus status",
     require     => Exec [ 'extract_nexus' ]
   }
   
