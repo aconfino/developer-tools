@@ -1,5 +1,4 @@
 include java
-include unzip
 
 class { 'sonar' :
   stash_base_dir => '/opt/sonar',
@@ -19,4 +18,4 @@ package { 'unzip-6.0-15.el7.x86_64' :
 Exec { path => [ "/bin/", "/sbin/" , "/usr/bin/", "/usr/sbin/" ], logoutput => true, user => "ec2-user" }
 Package { allow_virtual => false }
 
-Class ['java'] ->  Class ['stash']
+Class ['java'] ->  Class ['sonar']
