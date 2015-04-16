@@ -37,7 +37,7 @@ $environment_properties="$stash_install_dir/bin/setenv.sh"
 
   exec { 
     "change_owners":
-    command => "chown $ec2-user:$ec2-user -R $stash_base_dir",
+    command => "chown ec2-user:ec2-user -R $stash_base_dir",
 	cwd => "$stash_base_dir",
     require => Exec['extract_stash'],
   }
