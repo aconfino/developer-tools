@@ -11,7 +11,7 @@ $nexus_install_dir="$nexus_base_dir/nexus-$version-bundle"
   
   exec {
     'download_nexus':
-	command => "curl -O http://download.sonatype.com/nexus/oss/$tarball",
+	command => "curl -O "https://sonatype-download.global.ssl.fastly.net/nexus/oss/$tarball",
     cwd => "$nexus_base_dir",
     require => File[$nexus_base_dir],
     creates => "$nexus_base_dir/$tarball",
