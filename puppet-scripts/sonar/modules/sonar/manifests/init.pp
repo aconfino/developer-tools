@@ -30,7 +30,7 @@ $zip="sonarqube-$version.zip"
     hasstatus  => true,
     start      => "su ec2-user -c \"$sonar_install_dir/bin/linux-x86-64/sonar.sh start\"",
     stop       => "su ec2-user -c \"$sonar_install_dir/bin/linux-x86-64/sonar.sh stop\"",
-	status     => "su ec2-user -c \"$sonar_install_dir/bin/linux-x86-64/sonar.sh status\"",
+	status     => "$sonar_install_dir/bin/linux-x86-64/sonar.sh status",
     require     => Exec [ 'extract_sonar' ]
   }
   
