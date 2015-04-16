@@ -1,7 +1,7 @@
 include java
 
 class { 'sonar' :
-  stash_base_dir => '/opt/sonar',
+  sonar_base_dir => '/opt/sonar',
   version => '5.1',
 }
 
