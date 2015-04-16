@@ -5,8 +5,7 @@ SUBNET=subnet-323da86b
 SECURITY_GROUP=sg-64387f00
 KEY_NAME=dev-poc-east
 
-INSTANCE_TYPE=t2.medium
-PEM_FILE=C:/projects/developer-tools/aws/$KEY_NAME.pem
+INSTANCE_TYPE=t2.micro
 TOOL=$1
 
 function checkState(){
@@ -64,15 +63,42 @@ function bootstrap(){
   ssh -tt -i $PEM_FILE -o stricthostkeychecking=no ec2-user@$public_ip "~/bootstrap.sh $TOOL"
 }
 
-function verify(){
-    if [[ -z "$TOOL" ]]
-      then
-        echo "Please specify a tool you wish to provision.  Example: create-instance.sh bamboo"
-	    exit 1;
-    fi
+function usage(){
+  echo ""
+  echo "Usage:"
+  echo "create-instance.sh #1 #2 #3 #4"
+  echo "#1 - tool to provision ()bamboo|jira|stash|nexus|sonar)"
+  echo "#2 - AWS subnet id (optional)"
+  echo "#3 - AWS security group id (optional)"
+  echo "#4 - AWS key pair name (optional)"
+  echo ""
 }
 
-verify
+function setup(){
+    if [[ -z "$1" ]]
+      then
+        usage
+	    exit 1;
+    fi
+	if [[ $2 != "" ]]
+	  then
+	    echo "Overriding SUBNET variable with command line argument $2"
+		SUBNET=$2
+	fi
+	if [[ $3 != "" ]]
+	  then
+	    echo "Overriding SECURITY_GROUP variable with command line argument $3"
+		SECURITY_GROUP=$3
+	fi
+	if [[ $4 != "" ]]
+	  then
+	    echo "Overriding KEY_NAME variable with command line argument $4"
+		KEY_NAME=$4
+	fi
+	PEM_FILE=C:/projects/developer-tools/aws/$KEY_NAME.pem
+}
+
+setup $1 $2 $3 $4
 createInstance
 getPublicIp
 tagInstance

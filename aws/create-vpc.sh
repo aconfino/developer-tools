@@ -69,6 +69,18 @@ function modifyRouteTable(){
 	 echo "Added internet gateway $internet_gateway_id to the main route table $route_table_id"
 }
 
+function removeOldKeyPair(){
+    if [ -f $key_pair.pem ]; then
+       echo "Deleting old pem $key_pair.pem"
+	   rm -f $key_pair.pem
+    fi
+    key_pair=$(aws ec2 describe-key-pairs --output text --query KeyPairs[0].KeyName)
+	if [ $key_pair == "$key_pair"]; then
+	   echo "Delete key paif $key_pair from AWS"
+	   aws ec2 delete-key-pair --key-name
+	fi
+}
+
 function createKeyPair(){
     echo "Creating key pair"
 	aws ec2 create-key-pair --key-name $key_pair --output text --query KeyMaterial > $key_pair.pem
@@ -95,5 +107,9 @@ createInternetGateway
 createSecurityGroup
 createDefaultSubnet
 modifyRouteTable
+removeOldKeyPair
 createKeyPair
 haveANiceDay
+
+./create-servers.sh $subnet_id $security_group_id
+
