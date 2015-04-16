@@ -72,7 +72,8 @@ $environment_properties="$jira_install_dir/bin/setenv.sh"
 	status     => "puppet:///modules/jira/jira-status.sh",
     require     => [ File_line [ 'modify JIRA_HOME variable' ],
 					 File_line [ 'modify JVM_MINIMUM_MEMORY' ],
-					 File_line [ 'modify JVM_MAXIMUM_MEMORY' ]
+					 File_line [ 'modify JVM_MAXIMUM_MEMORY' ],
+					 File [ $jira_home ]
 					]
   }
  
